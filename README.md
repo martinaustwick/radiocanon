@@ -1,5 +1,7 @@
 # radiocanon
 
+Link through to the map: https://raw.githubusercontent.com/martinaustwick/radiocanon/master/RadioCanon.html
+
 Action list/pseudocode
 
 
