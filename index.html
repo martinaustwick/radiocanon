@@ -58,15 +58,48 @@
 			{
 				L.circleMarker(latlng, {
 						radius: 5,
-						stroke: '#red',
-					 	fill: '#red',
-					 	fillOpacity: 0.5
+						color: 'red',
+					 	fillColor: 'red',
+					 	fillOpacity: 0.5,
+					 	opacity: 0
 				}).addTo(mymap)
 				.bindPopup("<B>"+producers[i].name +"</B><br>" + producers[i].bio);
 			}	
 			//console.log(producers[i].latlng);
 			//producers[i].marker = L.marker([producers[i].lat_long]);
 			console.log(producers[i]);
+		}
+
+	});
+
+	//add stories:
+	var audio_pieces;
+	d3.csv("data/csv/audio_pieces.csv", function(data) {
+  		//console.log(data[0]);
+  		audio_pieces = data;
+  		//console.log(producers);
+	  	for(var i = 0; i<audio_pieces.length; i++)
+		{
+			//split text by comma and remove whitespace
+			latlng = audio_pieces[i].lat_long.replace(/\s/g,'').split(",");
+			//clunky not-null because I don't trust JS
+			if(latlng[0] == null || latlng[1]==null)
+			{
+
+			}
+			else
+			{
+				L.circleMarker(latlng, {
+						radius: 10,
+						color: '#000',
+					 	//fillColor: '#blue',
+					 	fillOpacity: 0
+				}).addTo(mymap)
+				.bindPopup("<B>"+audio_pieces[i].name +"</B><br>" + audio_pieces[i].description);
+			}	
+			//console.log(producers[i].latlng);
+			//producers[i].marker = L.marker([producers[i].lat_long]);
+			console.log(audio_pieces[i]);
 		}
 
 	});
