@@ -2,7 +2,7 @@
 
 Link through to the map: 
 
-[https://raw.githubusercontent.com/martinaustwick/radiocanon/master/RadioCanon.html](https://raw.githubusercontent.com/martinaustwick/radiocanon/master/RadioCanon.html)
+[https://raw.githubusercontent.com/martinaustwick/radiocanon/master/index.html](https://raw.githubusercontent.com/martinaustwick/radiocanon/master/index.html)
 
 Action list/pseudocode
 
