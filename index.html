@@ -34,7 +34,8 @@
 			- populate with data from csvs
 
 	*/
-
+	var producerColor = '#009944';
+	var audioColor = 'black';
 	var producers;
 
 	//var mymap = L.map('mapid').setView([51.505, -0.09], 13);
@@ -57,52 +58,229 @@
 			else
 			{
 				L.circleMarker(latlng, {
-						radius: 5,
-						color: 'red',
-					 	fillColor: 'red',
+						radius: 14,
+						color: producerColor,
+					 	fillColor: producerColor,
 					 	fillOpacity: 0.5,
 					 	opacity: 0
 				}).addTo(mymap)
 				.bindPopup("<B>"+producers[i].name +"</B><br>" + producers[i].bio);
+
+				producers[i].latlng = latlng;
 			}	
 			//console.log(producers[i].latlng);
 			//producers[i].marker = L.marker([producers[i].lat_long]);
-			console.log(producers[i]);
+			//console.log(producers[i]);
 		}
 
+		loadPieces();
+		//loadReccs();
+
 	});
+
+
 
 	//add stories:
 	var audio_pieces;
-	d3.csv("data/csv/audio_pieces.csv", function(data) {
-  		//console.log(data[0]);
-  		audio_pieces = data;
-  		//console.log(producers);
-	  	for(var i = 0; i<audio_pieces.length; i++)
+
+	function loadPieces()
+	{
+		d3.csv("data/csv/audio_pieces.csv", function(data) 
 		{
-			//split text by comma and remove whitespace
-			latlng = audio_pieces[i].lat_long.replace(/\s/g,'').split(",");
-			//clunky not-null because I don't trust JS
-			if(latlng[0] == null || latlng[1]==null)
+	  		//console.log(data[0]);
+	  		audio_pieces = data;
+	  		//console.log(producers);
+		  	for(var i = 0; i<audio_pieces.length; i++)
 			{
+				//split text by comma and remove whitespace
+				latlng = audio_pieces[i].lat_long.replace(/\s/g,'').split(",");
+				//clunky not-null because I don't trust JS
+				if(latlng[0] == null || latlng[1]==null)
+				{
 
+				}
+				else
+				{
+					L.circleMarker(latlng, {
+							radius: 5,
+							color: audioColor,
+						 	fillColor: audioColor,
+						 	fillOpacity: 10
+					}).addTo(mymap)
+					.bindPopup("<B>"+audio_pieces[i].name +"</B><br>" + audio_pieces[i].description);
+
+					audio_pieces[i].latlng = latlng;
+				}	
+				//console.log(producers[i].latlng);
+				//producers[i].marker = L.marker([producers[i].lat_long]);
+				//console.log(audio_pieces[i]);
+
+				//draw in lines to parent producers
 			}
-			else
-			{
-				L.circleMarker(latlng, {
-						radius: 10,
-						color: '#000',
-					 	//fillColor: '#blue',
-					 	fillOpacity: 0
-				}).addTo(mymap)
-				.bindPopup("<B>"+audio_pieces[i].name +"</B><br>" + audio_pieces[i].description);
-			}	
-			//console.log(producers[i].latlng);
-			//producers[i].marker = L.marker([producers[i].lat_long]);
-			console.log(audio_pieces[i]);
-		}
+			linkMakers();
+			linkReccs();
+		});
 
-	});
+		
+	}
+
+
+	function linkMakers()
+	{
+		for(var i = 0; i<audio_pieces.length; i++)
+		{
+			if(audio_pieces[i].producer_id !== null)
+			{
+					//console.log(audio_pieces[i].producer_id);
+					for(var j = 0; j<producers.length; j++)
+					{
+						try
+						{
+							if(producers[j].id==audio_pieces[i].producer_id)
+							{
+								//console.log("JAZZ      "+producers[j].name + " " + i + " " + j);
+								var p = new L.LatLng(audio_pieces[i].latlng[0],audio_pieces[i].latlng[1]);
+								var q = new L.LatLng(producers[j].latlng[0],producers[j].latlng[1]);
+								var pointz = [p,q];
+
+								//console.log(p + " " + q);
+								var lineo = new L.Polyline(pointz, {
+								    color: audioColor,
+								    weight: 1,
+								    opacity: 0.5,
+								    smoothFactor: 1
+								});
+								//console.log("Will this work?");
+								lineo.addTo(mymap);
+							}
+						}
+						catch(err)
+						{
+							console.log("well *something* went wrong tbh " + i + " " + j)
+						}
+					}
+			}
+
+			if(audio_pieces[i].producer_2_id !== null)
+			{
+				//console.log(audio_pieces[i].producer_id);
+				for(var j = 0; j<producers.length; j++)
+				{
+					try
+					{
+						if(producers[j].id==audio_pieces[i].producer_2_id)
+						{
+							//console.log("JAZZ      "+producers[j].name + " " + i + " " + j);
+							var p = new L.LatLng(audio_pieces[i].latlng[0],audio_pieces[i].latlng[1]);
+							var q = new L.LatLng(producers[j].latlng[0],producers[j].latlng[1]);
+							var pointz = [p,q];
+
+							//console.log(p + " " + q);
+							var lineo = new L.Polyline(pointz, {
+							    color: audioColor,
+							    weight: 1,
+							    opacity: 0.3,
+							    smoothFactor: 1
+							});
+							//console.log("Will this work?");
+							lineo.addTo(mymap);
+						}
+					}
+					catch(err)
+					{
+						console.log("well *something* went wrong tbh " + i + " " + j)
+					}
+				}
+			}
+
+			if(audio_pieces[i].producer_3_id !== null)
+			{
+				//console.log(audio_pieces[i].producer_id);
+				for(var j = 0; j<producers.length; j++)
+				{
+					try
+					{
+						if(producers[j].id==audio_pieces[i].producer_3_id)
+						{
+							//console.log("JAZZ      "+producers[j].name + " " + i + " " + j);
+							var p = new L.LatLng(audio_pieces[i].latlng[0],audio_pieces[i].latlng[1]);
+							var q = new L.LatLng(producers[j].latlng[0],producers[j].latlng[1]);
+							var pointz = [p,q];
+
+							//console.log(p + " " + q);
+							var lineo = new L.Polyline(pointz, {
+							    color: audioColor,
+							    weight: 1,
+							    opacity: 0.3,
+							    smoothFactor: 1
+							});
+							//console.log("Will this work?");
+							lineo.addTo(mymap);
+						}
+					}
+					catch(err)
+					{
+						console.log("well *something* went wrong tbh " + i + " " + j)
+					}
+				}
+			}
+
+
+			
+		}
+	}
+
+	function linkReccs()
+	{
+			for(var i = 0; i<producers.length; i++)
+			{
+				if(producers[i].recomends_1!=null)
+				{
+						for(var j = 0; j<audio_pieces.length; j++)
+						{
+
+								var matcher = audio_pieces[j].id==producers[i].recomends_1;
+								if(producers[i].recomends_2!=null) matcher = matcher || audio_pieces[j].id==producers[i].recomends_2;
+								if(producers[i].recomends_3!=null) matcher = matcher || audio_pieces[j].id==producers[i].recomends_3;
+								if(producers[i].recomends_4!=null) matcher = matcher || audio_pieces[j].id==producers[i].recomends_4;
+								if(producers[i].recomends_5!=null) matcher = matcher || audio_pieces[j].id==producers[i].recomends_5;
+
+								if(matcher)
+								{
+									try
+									{
+										console.log(matcher)	
+										//console.log("JAZZ      "+producers[j].name + " " + i + " " + j);
+										var p = new L.LatLng(audio_pieces[j].latlng[0],audio_pieces[j].latlng[1]);
+										var q = new L.LatLng(producers[i].latlng[0],producers[i].latlng[1]);
+										var pointz = [p,q];
+
+										//console.log(p + " " + q);
+										var lineo = new L.Polyline(pointz, {
+										    color: producerColor,
+										    weight: 1,
+										    opacity: 0.7,
+										    smoothFactor: 1
+										});
+										//console.log("Will this work?");
+										lineo.addTo(mymap);
+										
+									}
+									catch(err)
+									{
+										console.log("well *something* went wrong tbh " + i + " " + j)
+									}
+								}
+
+								
+
+								
+
+								
+						}
+				}
+			}
+	}
 
 
 	
