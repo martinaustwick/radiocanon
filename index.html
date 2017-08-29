@@ -138,25 +138,26 @@
 						{
 							if(producers[j].id==audio_pieces[i].producer_id)
 							{
-								//console.log("JAZZ      "+producers[j].name + " " + i + " " + j);
+								// console.log("JAZZ      "+producers[j].name + " " + i + " " + j);
+								// console.log(audio_pieces[i]);
 								var p = new L.LatLng(audio_pieces[i].latlng[0],audio_pieces[i].latlng[1]);
 								var q = new L.LatLng(producers[j].latlng[0],producers[j].latlng[1]);
 								var pointz = [p,q];
 
-								//console.log(p + " " + q);
 								var lineo = new L.Polyline(pointz, {
 								    color: audioColor,
 								    weight: 1,
 								    opacity: 0.5,
 								    smoothFactor: 1
 								});
-								//console.log("Will this work?");
 								lineo.addTo(mymap);
 							}
 						}
 						catch(err)
 						{
-							console.log("well *something* went wrong tbh " + i + " " + j)
+							
+							console.log("link failed to form on Producer j of Audio Piece i; piece: " + audio_pieces[i].name + " [LOCATION: " + audio_pieces[i].latlng + "] , Producer:" + producers[j].name + " [LOCATION: " + producers[j].latlng +"]");
+							
 						}
 					}
 			}
@@ -170,7 +171,6 @@
 					{
 						if(producers[j].id==audio_pieces[i].producer_2_id)
 						{
-							//console.log("JAZZ      "+producers[j].name + " " + i + " " + j);
 							var p = new L.LatLng(audio_pieces[i].latlng[0],audio_pieces[i].latlng[1]);
 							var q = new L.LatLng(producers[j].latlng[0],producers[j].latlng[1]);
 							var pointz = [p,q];
@@ -188,7 +188,8 @@
 					}
 					catch(err)
 					{
-						console.log("well *something* went wrong tbh " + i + " " + j)
+						//console.log("link failed to form on Producer j of Audio Piece i; i= " + i + ", j=" + j);
+						console.log("link failed to form on Producer j of Audio Piece i; piece: " + audio_pieces[i].name + " [LOCATION: " + audio_pieces[i].latlng + "] , Producer:" + producers[j].name + " [LOCATION: " + producers[j].latlng +"]");
 					}
 				}
 			}
@@ -220,7 +221,7 @@
 					}
 					catch(err)
 					{
-						console.log("well *something* went wrong tbh " + i + " " + j)
+						console.log("link failed to form on Producer j of Audio Piece i; piece: " + audio_pieces[i].name + " [LOCATION: " + audio_pieces[i].latlng + "] , Producer:" + producers[j].name + " [LOCATION: " + producers[j].latlng +"]");
 					}
 				}
 			}
@@ -238,7 +239,7 @@
 				{
 						for(var j = 0; j<audio_pieces.length; j++)
 						{
-
+							
 								var matcher = audio_pieces[j].id==producers[i].recomends_1;
 								if(producers[i].recomends_2!=null) matcher = matcher || audio_pieces[j].id==producers[i].recomends_2;
 								if(producers[i].recomends_3!=null) matcher = matcher || audio_pieces[j].id==producers[i].recomends_3;
@@ -249,8 +250,8 @@
 								{
 									try
 									{
-										console.log(matcher)	
-										//console.log("JAZZ      "+producers[j].name + " " + i + " " + j);
+										//console.log(matcher)	
+										
 										var p = new L.LatLng(audio_pieces[j].latlng[0],audio_pieces[j].latlng[1]);
 										var q = new L.LatLng(producers[i].latlng[0],producers[i].latlng[1]);
 										var pointz = [p,q];
@@ -268,7 +269,8 @@
 									}
 									catch(err)
 									{
-										console.log("well *something* went wrong tbh " + i + " " + j)
+										//console.log("Link failed to form on Producer i recommending audio piece j: " + i + " " + j)
+										console.log("link failed to form on Producer i recommending Audio Piece j; piece: " + audio_pieces[j].name + " [LOCATION: " + audio_pieces[j].latlng + "] , Producer:" + producers[i].name + " [LOCATION: " + producers[i].latlng +"]");
 									}
 								}
 
