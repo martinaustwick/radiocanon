@@ -10,9 +10,17 @@
 	<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ==" crossorigin=""/>
+
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/leaflet.markercluster@1.1.0/dist/MarkerCluster.css" />
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/leaflet.markercluster@1.1.0/dist/MarkerCluster.Default.css" />
+
+
+
     <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js" integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log==" crossorigin=""></script>
 
    	<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+
+   	<script type='text/javascript' src='https://unpkg.com/leaflet.markercluster@1.1.0/dist/leaflet.markercluster.js'></script>
 
 
 
@@ -40,7 +48,9 @@
 
 	//var mymap = L.map('mapid').setView([51.505, -0.09], 13);
 	var mymap = L.map('mapid').setView([30, 0], 2);
-
+	
+	var prodCluster = L.markerClusterGroup();
+	var pieceCluster = L.markerClusterGroup();
 	//have to be careful about asynchronous calls here...
 	d3.csv("data/csv/producers.csv", function(data) {
   		//console.log(data[0]);
@@ -57,17 +67,20 @@
 			}
 			else
 			{
-				L.circleMarker(latlng, {
+				var prod = L.circleMarker(latlng, {
 						radius: 14,
 						color: producerColor,
 					 	fillColor: producerColor,
 					 	fillOpacity: 0.5,
 					 	opacity: 0
-				}).addTo(mymap)
-				.bindPopup("<B>"+producers[i].name +"</B><br>" + producers[i].bio);
+				}).bindPopup("<B>"+producers[i].name +"</B><br>" + producers[i].bio);
+
+				prodCluster.addLayer(prod);
 
 				producers[i].latlng = latlng;
 			}	
+
+			mymap.addLayer(prodCluster);
 			//console.log(producers[i].latlng);
 			//producers[i].marker = L.marker([producers[i].lat_long]);
 			//console.log(producers[i]);
@@ -101,19 +114,26 @@
 				}
 				else
 				{
-					L.circleMarker(latlng, {
+					var piece = L.circleMarker(latlng, {
 							radius: 5,
 							color: audioColor,
 						 	fillColor: audioColor,
 						 	fillOpacity: 10
-					}).addTo(mymap)
-					.bindPopup("<B>"+audio_pieces[i].name +"</B><br>" + audio_pieces[i].description);
+					}).bindPopup("<B>"+audio_pieces[i].name +"</B><br>" + audio_pieces[i].description);
 
+					prodCluster.addLayer(piece);
+
+					/*
+						Use the same markercluster for each to avoid overlap of stories and producers
+						but you don't know what's what on zoomout, sadly
+					*/
 					audio_pieces[i].latlng = latlng;
+
 				}	
 				//console.log(producers[i].latlng);
 				//producers[i].marker = L.marker([producers[i].lat_long]);
 				//console.log(audio_pieces[i]);
+				//mymap.addLayer(pieceCluster);
 
 				//draw in lines to parent producers
 			}
@@ -239,7 +259,7 @@
 				{
 						for(var j = 0; j<audio_pieces.length; j++)
 						{
-							
+
 								var matcher = audio_pieces[j].id==producers[i].recomends_1;
 								if(producers[i].recomends_2!=null) matcher = matcher || audio_pieces[j].id==producers[i].recomends_2;
 								if(producers[i].recomends_3!=null) matcher = matcher || audio_pieces[j].id==producers[i].recomends_3;
